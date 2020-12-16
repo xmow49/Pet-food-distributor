@@ -1,0 +1,883 @@
+[
+    {
+        "id": "61afbbf1.4b8054",
+        "type": "tab",
+        "label": "Croquette",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9e5b4eb1.95158",
+        "type": "ui_button",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "group": "2d082a71.79bf96",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Distribuer des croquettes",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "topic": "",
+        "x": 870,
+        "y": 680,
+        "wires": [
+            [
+                "1cf1e4cb.b6063b"
+            ]
+        ]
+    },
+    {
+        "id": "1cf1e4cb.b6063b",
+        "type": "pythonshell in",
+        "z": "61afbbf1.4b8054",
+        "name": "Servo",
+        "pyfile": "/home/pi/servo.py",
+        "virtualenv": "",
+        "continuous": false,
+        "stdInData": false,
+        "x": 1130,
+        "y": 680,
+        "wires": [
+            [
+                "fff0709f.aacf3"
+            ]
+        ]
+    },
+    {
+        "id": "d896d3b2.de527",
+        "type": "ui_numeric",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "label": "Heure(s)",
+        "tooltip": "",
+        "group": "98c21ed9.1acba",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "23",
+        "step": 1,
+        "x": 320,
+        "y": 440,
+        "wires": [
+            [
+                "f5f20861.84cec8",
+                "246e1a07.704246"
+            ]
+        ]
+    },
+    {
+        "id": "83254aa.e29b0b8",
+        "type": "ui_numeric",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "label": "Minute(s)",
+        "tooltip": "",
+        "group": "98c21ed9.1acba",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "59",
+        "step": 1,
+        "x": 320,
+        "y": 560,
+        "wires": [
+            [
+                "5213d972.ea3968",
+                "47bb78b.c22fe88"
+            ]
+        ]
+    },
+    {
+        "id": "f5f20861.84cec8",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "check Hours",
+        "func": "r = msg.payload;\nd = new Date();\na = d.getHours();\nif(a == flow.get(\"hour1\")){\n    msg.payload = 1;\n    flow.set(\"Checkhours1\", msg.payload);\n}else{\n    msg.payload = 0;\n    flow.set(\"Checkhours1\", msg.payload);\n}\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 650,
+        "y": 440,
+        "wires": [
+            [
+                "e30cb202.63e12"
+            ]
+        ]
+    },
+    {
+        "id": "246e1a07.704246",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "set",
+        "func": "flow.set(\"hour1\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5213d972.ea3968",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "check Minutes",
+        "func": "r = msg.payload;\nd = new Date();\na = d.getMinutes();\nif(a == flow.get(\"minutes1\")){\n    msg.payload = 1;\n    flow.set(\"Checkminutes1\", msg.payload);\n}else{\n    msg.payload = 0;\n    flow.set(\"Checkminutes1\", msg.payload);\n}\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 660,
+        "y": 560,
+        "wires": [
+            [
+                "e30cb202.63e12"
+            ]
+        ]
+    },
+    {
+        "id": "47bb78b.c22fe88",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "set",
+        "func": "flow.set(\"minutes1\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e30cb202.63e12",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "Check",
+        "func": "d = new Date();\nif(flow.get(\"Checkhours1\") == 1){\n    \n    if(flow.get(\"Checkminutes1\") == 1){\n            if(d.getSeconds() === 0){\n                if(flow.get(\"time1\") == 1){\n                        msg.payload = 1;\n                        return msg;\n                \n                }else{\n                   msg.payload = 0; \n                }\n        }\n    }else{\n        msg.payload = 0;\n        \n    }\n}else{\n    msg.payload = 0;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 810,
+        "y": 500,
+        "wires": [
+            [
+                "1296896.22fab77"
+            ]
+        ]
+    },
+    {
+        "id": "51db23c7.b87d1c",
+        "type": "inject",
+        "z": "61afbbf1.4b8054",
+        "name": "1S",
+        "topic": "A",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 330,
+        "y": 500,
+        "wires": [
+            [
+                "f5f20861.84cec8",
+                "5213d972.ea3968"
+            ]
+        ]
+    },
+    {
+        "id": "414dfeff.13be1",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "set",
+        "func": "flow.set(\"time1\", msg.payload);\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b86fb5a7.b77a78",
+        "type": "ui_switch",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "label": "Activé",
+        "tooltip": "",
+        "group": "98c21ed9.1acba",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 310,
+        "y": 380,
+        "wires": [
+            [
+                "414dfeff.13be1"
+            ]
+        ]
+    },
+    {
+        "id": "8ee76ede.1f008",
+        "type": "ui_numeric",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "label": "Heure(s)",
+        "tooltip": "",
+        "group": "85a35c84.606eb",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "23",
+        "step": 1,
+        "x": 320,
+        "y": 800,
+        "wires": [
+            [
+                "6a5d878c.62eb68",
+                "2ad5fec4.7db652"
+            ]
+        ]
+    },
+    {
+        "id": "215c1afd.e076e6",
+        "type": "ui_numeric",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "label": "Minute(s)",
+        "tooltip": "",
+        "group": "85a35c84.606eb",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "59",
+        "step": 1,
+        "x": 320,
+        "y": 920,
+        "wires": [
+            [
+                "d88f8530.3728d8",
+                "c9425276.675ee"
+            ]
+        ]
+    },
+    {
+        "id": "6a5d878c.62eb68",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "check Hours",
+        "func": "r = msg.payload;\nd = new Date();\na = d.getHours();\nif(a == flow.get(\"hour2\")){\n    msg.payload = 1;\n    flow.set(\"Checkhours2\", msg.payload);\n}else{\n    msg.payload = 0;\n    flow.set(\"Checkhours2\", msg.payload);\n}\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 610,
+        "y": 800,
+        "wires": [
+            [
+                "fbc53dd4.15ff4"
+            ]
+        ]
+    },
+    {
+        "id": "2ad5fec4.7db652",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "set",
+        "func": "flow.set(\"hour2\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d88f8530.3728d8",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "check Minutes",
+        "func": "r = msg.payload;\nd = new Date();\na = d.getMinutes();\nif(a == flow.get(\"minutes2\")){\n    msg.payload = 1;\n    flow.set(\"Checkminutes2\", msg.payload);\n}else{\n    msg.payload = 0;\n    flow.set(\"Checkminutes2\", msg.payload);\n}\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 620,
+        "y": 920,
+        "wires": [
+            [
+                "fbc53dd4.15ff4"
+            ]
+        ]
+    },
+    {
+        "id": "c9425276.675ee",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "set",
+        "func": "flow.set(\"minutes2\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fbc53dd4.15ff4",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "Check",
+        "func": "d = new Date();\nif(flow.get(\"Checkhours2\") == 1){\n    \n    if(flow.get(\"Checkminutes2\") == 1){\n        if(d.getSeconds() === 0){\n                if(flow.get(\"time2\") == 1){\n                        msg.payload = 1;\n                        return msg;\n                }\n\n        }\n    }else{\n        msg.payload = 0;\n        \n    }\n}else{\n    msg.payload = 0;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 770,
+        "y": 860,
+        "wires": [
+            [
+                "16bb769a.7391e9"
+            ]
+        ]
+    },
+    {
+        "id": "1091468.1bbc5ba",
+        "type": "inject",
+        "z": "61afbbf1.4b8054",
+        "name": "1S",
+        "topic": "A",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 330,
+        "y": 860,
+        "wires": [
+            [
+                "6a5d878c.62eb68",
+                "d88f8530.3728d8"
+            ]
+        ]
+    },
+    {
+        "id": "5d9c3ff.25548c",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "set",
+        "func": "flow.set(\"time2\", msg.payload);\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cb875383.485b8",
+        "type": "ui_switch",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "label": "Activé",
+        "tooltip": "",
+        "group": "85a35c84.606eb",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 310,
+        "y": 740,
+        "wires": [
+            [
+                "5d9c3ff.25548c"
+            ]
+        ]
+    },
+    {
+        "id": "d7f2b630.218818",
+        "type": "ui_text",
+        "z": "61afbbf1.4b8054",
+        "group": "68d26613.1ffed8",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Dernière distribution:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1540,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "fff0709f.aacf3",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "get date",
+        "func": "d = new Date();\n\nif(msg.payload == \"ok\"){\n  let month = String(d.getMonth() + 1);\n  let day = String(d.getDate());\n  const year = String(d.getFullYear());\n\n  if (month.length < 2) month = '0' + month;\n  if (day.length < 2) day = '0' + day;\n\n  msg.payload = d.toLocaleTimeString('en-US', {hour12:false}) + \" \" + `${day}/${month}/${year}`;\n  return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1320,
+        "y": 700,
+        "wires": [
+            [
+                "d7f2b630.218818"
+            ]
+        ]
+    },
+    {
+        "id": "1296896.22fab77",
+        "type": "delay",
+        "z": "61afbbf1.4b8054",
+        "name": "1 Fois",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 910,
+        "y": 500,
+        "wires": [
+            [
+                "1cf1e4cb.b6063b"
+            ]
+        ]
+    },
+    {
+        "id": "16bb769a.7391e9",
+        "type": "delay",
+        "z": "61afbbf1.4b8054",
+        "name": "1 Fois",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 870,
+        "y": 860,
+        "wires": [
+            [
+                "1cf1e4cb.b6063b"
+            ]
+        ]
+    },
+    {
+        "id": "4730987f.99a678",
+        "type": "ui_button",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "group": "2d082a71.79bf96",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "1 distribution",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "red",
+        "icon": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "topic": "",
+        "x": 1130,
+        "y": 800,
+        "wires": [
+            [
+                "ddaf3a11.eb9618"
+            ]
+        ]
+    },
+    {
+        "id": "ddaf3a11.eb9618",
+        "type": "pythonshell in",
+        "z": "61afbbf1.4b8054",
+        "name": "Servo",
+        "pyfile": "/home/pi/manuel.py",
+        "virtualenv": "",
+        "continuous": false,
+        "stdInData": false,
+        "x": 1310,
+        "y": 800,
+        "wires": [
+            [
+                "fff0709f.aacf3"
+            ]
+        ]
+    },
+    {
+        "id": "46a23cfb.403004",
+        "type": "ui_numeric",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "label": "Heure(s)",
+        "tooltip": "",
+        "group": "4f18a215.b5415c",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "23",
+        "step": 1,
+        "x": 320,
+        "y": 1100,
+        "wires": [
+            [
+                "6492d8e1.cec398",
+                "db6edfda.cf433"
+            ]
+        ]
+    },
+    {
+        "id": "52a94534.4f101c",
+        "type": "ui_numeric",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "label": "Minute(s)",
+        "tooltip": "",
+        "group": "4f18a215.b5415c",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "59",
+        "step": 1,
+        "x": 320,
+        "y": 1220,
+        "wires": [
+            [
+                "4cc88de7.1ce194",
+                "24eafb67.74da34"
+            ]
+        ]
+    },
+    {
+        "id": "6492d8e1.cec398",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "check Hours",
+        "func": "r = msg.payload;\nd = new Date();\na = d.getHours();\nif(a == flow.get(\"hour3\")){\n    msg.payload = 1;\n    flow.set(\"Checkhours3\", msg.payload);\n}else{\n    msg.payload = 0;\n    flow.set(\"Checkhours3\", msg.payload);\n}\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 610,
+        "y": 1100,
+        "wires": [
+            [
+                "48fc4c42.732164"
+            ]
+        ]
+    },
+    {
+        "id": "db6edfda.cf433",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "set",
+        "func": "flow.set(\"hour3\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4cc88de7.1ce194",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "check Minutes",
+        "func": "r = msg.payload;\nd = new Date();\na = d.getMinutes();\nif(a == flow.get(\"minutes3\")){\n    msg.payload = 1;\n    flow.set(\"Checkminutes3\", msg.payload);\n}else{\n    msg.payload = 0;\n    flow.set(\"Checkminutes3\", msg.payload);\n}\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 620,
+        "y": 1220,
+        "wires": [
+            [
+                "48fc4c42.732164"
+            ]
+        ]
+    },
+    {
+        "id": "24eafb67.74da34",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "set",
+        "func": "flow.set(\"minutes3\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 1220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "48fc4c42.732164",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "Check",
+        "func": "d = new Date();\nif(flow.get(\"Checkhours3\") == 1){\n    \n    if(flow.get(\"Checkminutes3\") == 1){\n        if(d.getSeconds() === 0){\n                if(flow.get(\"time3\") == 1){\n                        msg.payload = 1;\n                        return msg;\n                }\n\n        }\n    }else{\n        msg.payload = 0;\n        \n    }\n}else{\n    msg.payload = 0;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 770,
+        "y": 1160,
+        "wires": [
+            [
+                "f4acc46a.8c0818"
+            ]
+        ]
+    },
+    {
+        "id": "ddf32b63.ed6188",
+        "type": "inject",
+        "z": "61afbbf1.4b8054",
+        "name": "1S",
+        "topic": "A",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 330,
+        "y": 1160,
+        "wires": [
+            [
+                "6492d8e1.cec398",
+                "4cc88de7.1ce194"
+            ]
+        ]
+    },
+    {
+        "id": "fbb708dd.749388",
+        "type": "function",
+        "z": "61afbbf1.4b8054",
+        "name": "set",
+        "func": "flow.set(\"time3\", msg.payload);\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 1040,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3a5bf639.05313a",
+        "type": "ui_switch",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "label": "Activé",
+        "tooltip": "",
+        "group": "4f18a215.b5415c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 310,
+        "y": 1040,
+        "wires": [
+            [
+                "fbb708dd.749388"
+            ]
+        ]
+    },
+    {
+        "id": "f4acc46a.8c0818",
+        "type": "delay",
+        "z": "61afbbf1.4b8054",
+        "name": "1 Fois",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 870,
+        "y": 1160,
+        "wires": [
+            [
+                "1cf1e4cb.b6063b"
+            ]
+        ]
+    },
+    {
+        "id": "41a60a23.591334",
+        "type": "rpi-gpio in",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "pin": "12",
+        "intype": "up",
+        "debounce": "20",
+        "read": false,
+        "x": 1180,
+        "y": 900,
+        "wires": [
+            [
+                "192d6a97.7de1a5"
+            ]
+        ]
+    },
+    {
+        "id": "192d6a97.7de1a5",
+        "type": "delay",
+        "z": "61afbbf1.4b8054",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "5",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 1400,
+        "y": 900,
+        "wires": [
+            [
+                "ddaf3a11.eb9618"
+            ]
+        ]
+    },
+    {
+        "id": "2d082a71.79bf96",
+        "type": "ui_group",
+        "z": "",
+        "name": "Manuel",
+        "tab": "15dcfa0f.ea6616",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "98c21ed9.1acba",
+        "type": "ui_group",
+        "z": "",
+        "name": "Horaire 1",
+        "tab": "15dcfa0f.ea6616",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "85a35c84.606eb",
+        "type": "ui_group",
+        "z": "",
+        "name": "Horaire 2",
+        "tab": "15dcfa0f.ea6616",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "68d26613.1ffed8",
+        "type": "ui_group",
+        "z": "",
+        "name": "Info",
+        "tab": "15dcfa0f.ea6616",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "4f18a215.b5415c",
+        "type": "ui_group",
+        "z": "",
+        "name": "Horaire 3",
+        "tab": "15dcfa0f.ea6616",
+        "order": 5,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "15dcfa0f.ea6616",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Distributeur de Croquette",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
